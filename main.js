@@ -29,7 +29,7 @@ const batch = [valid1, valid2, valid3, valid4, valid5, invalid1, invalid2, inval
 //Output: Returns true when the card number is valid, false when invalid.
 //Validates the passed credit card number, does not change the array parameter.
 const validateCred = cardNumber => {
-    let workingNumber = cardNumber;
+    let workingNumber = [...cardNumber];
     for (let i = workingNumber.length - 2; i >= 0; i--){
         if (!(workingNumber.length % 2) && !(i % 2)) {
             workingNumber[i] *= 2;
@@ -41,15 +41,48 @@ const validateCred = cardNumber => {
             workingNumber[i] -= 9;
         }
     }
-    console.log("Working Number: " + workingNumber);
+    //console.log("Working Number: " + workingNumber);
     let sum = workingNumber.reduce((acc, num) => acc + num);
-    console.log("Sum: " + sum);
+    //console.log("Sum: " + sum);
     if (!(sum % 10)){
         return true;
     } else {
         return false;
     }
-}
+};
+
+const findInvalidCards = numberArray => {
+    //console.log(numberArray);
+    let invalidArray = [];
+    for (let i = 0; i < numberArray.length; i++){
+        //console.log("NumberArray: " + numberArray[i]);
+        let check = validateCred(numberArray[i]);
+        //console.log("check: " + check);
+        if (!check) {
+            invalidArray.push(numberArray[i]);
+        }
+    }
+    return invalidArray;
+};
+
+const idInvalidCardCompanies = numberArray => {
+    let companies = [];
+    for (let i = 0; i < numberArray.length; i++ ) {
+        if (numberArray[i][0] === 3 && !companies.includes('Amex')) {
+                companies.push('Amex');
+        } else if (numberArray[i][0] === 4 && !companies.includes('Visa')) {
+            companies.push('Visa');
+        } else if (numberArray[i][0] === 5 && !companies.includes('Mastercard')) {
+            companies.push('Mastercard');
+        } else if (numberArray[i][0] === 6 && !companies.includes('Discover')) {
+            companies.push('Discover');
+        } else if (!companies.includes('Company not found')){
+            companies.push('Company not found');
+        }
+    }
+    //console.log(companies);
+    return companies;
+};
 
 console.log("Valid");
 console.log(validateCred(valid1));
@@ -75,4 +108,10 @@ console.log(validateCred(mystery4));
 console.log(validateCred(mystery5));
 console.log("========================================");
 
+console.log("Batch");
+const invalidNumbers = findInvalidCards(batch);
+console.log(invalidNumbers);
+console.log("========================================");
 
+console.log("Companies");
+console.log(idInvalidCardCompanies(invalidNumbers));
